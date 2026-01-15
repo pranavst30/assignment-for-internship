@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="REST API Frontend - Login and Register">
+    <title>REST API - Authentication</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>REST API Dashboard</h1>
+            <p class="subtitle">JWT Authentication & Role-Based Access Control</p>
+        </header>
+
+        <!-- Message Container -->
+        <div id="message" class="message hidden"></div>
+
+        <!-- Auth Forms Container -->
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div id="login-form" class="form-container">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="login-password" name="password" required
+                                placeholder="Enter your password">
+                            <button type="button" class="toggle-password" data-target="login-password">Show</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="form-switch">
+                    Don't have an account?
+                    <a href="#" id="show-register">Register here</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="form-container hidden">
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="register-name">Name</label>
+                        <input type="text" id="register-name" name="name" required placeholder="Enter your name"
+                            minlength="2" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" name="email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="register-password" name="password" required
+                                placeholder="Min 6 characters with a number" minlength="6">
+                            <button type="button" class="toggle-password" data-target="register-password">Show</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-role">Role</label>
+                        <select id="register-role" name="role">
+                            <option value="USER">User</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <p class="form-switch">
+                    Already have an account?
+                    <a href="#" id="show-login">Login here</a>
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>API Documentation: <a href="http://localhost:5000/api-docs" target="_blank">/api-docs</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
