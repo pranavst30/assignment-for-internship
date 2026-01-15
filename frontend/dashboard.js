@@ -1,19 +1,16 @@
-/**
- * REST API Frontend - Dashboard Script
- * Handles task CRUD operations and authentication state
- */
 
-// API Configuration
+
+
 const API_BASE_URL = 'http://localhost:5000/api/v1';
 
-// State
+
 let currentUser = null;
 let currentPage = 1;
 let totalPages = 1;
 let currentFilter = '';
 let editingTaskId = null;
 
-// DOM Elements
+
 const userInfoElement = document.getElementById('user-info');
 const logoutBtn = document.getElementById('logout-btn');
 const adminSection = document.getElementById('admin-section');
@@ -29,13 +26,9 @@ const pageInfoSpan = document.getElementById('page-info');
 const statusFilter = document.getElementById('status-filter');
 const messageDiv = document.getElementById('message');
 
-// ===========================================
-// UTILITY FUNCTIONS
-// ===========================================
 
-/**
- * Display message to user
- */
+
+
 function showMessage(text, type = 'error') {
     messageDiv.textContent = text;
     messageDiv.className = `message ${type}`;
@@ -46,31 +39,23 @@ function showMessage(text, type = 'error') {
     }, 5000);
 }
 
-/**
- * Get auth token from localStorage
- */
+
 function getToken() {
     return localStorage.getItem('token');
 }
 
-/**
- * Get user from localStorage
- */
+
 function getUser() {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
 }
 
-/**
- * Check if user is admin
- */
+
 function isAdmin() {
     return currentUser && currentUser.role === 'ADMIN';
 }
 
-/**
- * Redirect to login if not authenticated
- */
+
 function requireAuth() {
     const token = getToken();
     if (!token) {
@@ -80,18 +65,14 @@ function requireAuth() {
     return true;
 }
 
-/**
- * Logout user
- */
+
 function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = 'index.html';
 }
 
-/**
- * Make authenticated API request
- */
+
 async function apiRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     const token = getToken();
@@ -110,7 +91,7 @@ async function apiRequest(endpoint, options = {}) {
         const data = await response.json();
 
         if (response.status === 401) {
-            // Token expired or invalid
+
             showMessage('Session expired. Please login again.', 'warning');
             setTimeout(() => logout(), 2000);
             throw new Error('Unauthorized');
@@ -126,9 +107,7 @@ async function apiRequest(endpoint, options = {}) {
     }
 }
 
-/**
- * Format date for display
- */
+
 function formatDate(dateString) {
     const options = {
         year: 'numeric',
@@ -140,9 +119,7 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
-/**
- * Get badge class for status
- */
+
 function getStatusBadgeClass(status) {
     const classes = {
         'PENDING': 'badge-pending',
@@ -152,9 +129,7 @@ function getStatusBadgeClass(status) {
     return classes[status] || 'badge-pending';
 }
 
-/**
- * Get badge class for priority
- */
+
 function getPriorityBadgeClass(priority) {
     const classes = {
         'LOW': 'badge-low',
@@ -164,13 +139,9 @@ function getPriorityBadgeClass(priority) {
     return classes[priority] || 'badge-medium';
 }
 
-// ===========================================
-// TASK FUNCTIONS
-// ===========================================
 
-/**
- * Load tasks from API
- */
+
+
 async function loadTasks() {
     tasksContainer.innerHTML = '<p class="loading">Loading tasks...</p>';
 
@@ -193,9 +164,7 @@ async function loadTasks() {
     }
 }
 
-/**
- * Render tasks to DOM
- */
+
 function renderTasks(tasks) {
     if (tasks.length === 0) {
         tasksContainer.innerHTML = '<p class="empty-state">No tasks found. Create your first task!</p>';
@@ -226,18 +195,14 @@ function renderTasks(tasks) {
     tasksContainer.innerHTML = html;
 }
 
-/**
- * Escape HTML to prevent XSS
- */
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-/**
- * Update pagination controls
- */
+
 function updatePagination(pagination) {
     if (pagination.totalPages <= 1) {
         paginationDiv.classList.add('hidden');
@@ -250,9 +215,7 @@ function updatePagination(pagination) {
     nextPageBtn.disabled = !pagination.hasNextPage;
 }
 
-/**
- * Create or update task
- */
+
 async function handleTaskSubmit(e) {
     e.preventDefault();
 
@@ -265,14 +228,14 @@ async function handleTaskSubmit(e) {
 
     try {
         if (editingTaskId) {
-            // Update existing task
+
             await apiRequest(`/tasks/${editingTaskId}`, {
                 method: 'PUT',
                 body: JSON.stringify(taskData),
             });
             showMessage('Task updated successfully!', 'success');
         } else {
-            // Create new task
+
             await apiRequest('/tasks', {
                 method: 'POST',
                 body: JSON.stringify(taskData),
@@ -288,9 +251,7 @@ async function handleTaskSubmit(e) {
     }
 }
 
-/**
- * Edit task - populate form
- */
+
 async function editTask(taskId) {
     try {
         const response = await apiRequest(`/tasks/${taskId}`);
@@ -307,7 +268,7 @@ async function editTask(taskId) {
         submitBtn.textContent = 'Update Task';
         cancelBtn.classList.remove('hidden');
 
-        // Scroll to form
+
         adminSection.scrollIntoView({ behavior: 'smooth' });
 
     } catch (error) {
@@ -315,9 +276,7 @@ async function editTask(taskId) {
     }
 }
 
-/**
- * Delete task
- */
+
 async function deleteTask(taskId) {
     if (!confirm('Are you sure you want to delete this task?')) {
         return;
@@ -335,9 +294,7 @@ async function deleteTask(taskId) {
     }
 }
 
-/**
- * Reset task form
- */
+
 function resetForm() {
     editingTaskId = null;
     taskForm.reset();
@@ -347,57 +304,51 @@ function resetForm() {
     cancelBtn.classList.add('hidden');
 }
 
-// ===========================================
-// INITIALIZATION
-// ===========================================
 
-/**
- * Initialize dashboard
- */
+
+
 function init() {
-    // Check authentication
+
     if (!requireAuth()) return;
 
-    // Load user data
+
     currentUser = getUser();
 
     if (currentUser) {
         userInfoElement.textContent = `Welcome, ${currentUser.name} (${currentUser.role})`;
     }
 
-    // Show admin section if user is admin
+
     if (isAdmin()) {
         adminSection.classList.remove('hidden');
     }
 
-    // Load tasks
+
     loadTasks();
 }
 
-// ===========================================
-// EVENT LISTENERS
-// ===========================================
 
-// Initialize on page load
+
+
 document.addEventListener('DOMContentLoaded', init);
 
-// Logout
+
 logoutBtn.addEventListener('click', logout);
 
-// Task form submission
+
 taskForm.addEventListener('submit', handleTaskSubmit);
 
-// Cancel edit
+
 cancelBtn.addEventListener('click', resetForm);
 
-// Status filter
+
 statusFilter.addEventListener('change', (e) => {
     currentFilter = e.target.value;
     currentPage = 1;
     loadTasks();
 });
 
-// Pagination
+
 prevPageBtn.addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
