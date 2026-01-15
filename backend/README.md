@@ -93,6 +93,4 @@ Opens at `http://localhost:3000`
 - Task management dashboard
 - Role-based UI (Admin sees create/edit/delete)
 
-## API Documentation
 
-See [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) for detailed request/response examples.
